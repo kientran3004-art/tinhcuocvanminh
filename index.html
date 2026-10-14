@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phần Mềm Tính Cước Chuyển Phát Nhanh Văn Minh</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #c21a1a;
+    --primary-dark: #9e1212;
+    --primary-light: #fef2f2;
+    --secondary: #1e3a8a;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --bg-page: #f8fafc;
+    --card-bg: #ffffff;
+    --accent: #f59e0b;
+    --success: #10b981;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    line-height: 1.5;
+    padding: 24px 16px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06);
+    border-top: 5px solid var(--primary);
+  }
+  header h1 {
+    color: var(--primary);
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .card h2 {
+    font-size: 1.15rem;
+    color: var(--secondary);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #eff6ff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #374151;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    background-color: #fff;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--primary);
+  }
+
+  .dimension-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .checkbox-group input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+
+  .sub-panel {
+    background: #f9fafb;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+
+  .tab-btn {
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  .tab-btn:hover:not(.active) {
+    color: var(--text-main);
+  }
+
+  /* Result Box */
+  .result-card {
+    position: sticky;
+    top: 20px;
+    background: white;
+    border: 2px solid var(--primary-light);
+  }
+
+  .total-price-banner {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .total-price-banner .title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+  }
+
+  .total-price-banner .price {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.88rem;
+    border-bottom: 1px dashed #f3f4f6;
+  }
+
+  .detail-row:last-child {
+    border-bottom: none;
+  }
+
+  .detail-row .label {
+    color: var(--text-muted);
+  }
+
+  .detail-row .val {
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .notes-box {
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: #4b5563;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    padding: 10px;
+  }
+
+  .notes-box strong {
+    color: #b45309;
+  }
+
+  .badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Hệ Thống Tính Cước Chuyển Phát Nhanh Văn Minh</h1>
+    <p>Bảng cước áp dụng từ 21/04/2026 (Đã bao gồm VAT 10%) • Cập nhật đầy đủ phụ phí, dịch vụ cộng thêm</p>
+  </header>
+
+  <div class="grid">
+    <!-- CỘT BÊN TRÁI: NHẬP LIỆU -->
+    <div class="left-col">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('normal')">1. Hàng thông thường</button>
+        <button class="tab-btn" onclick="switchTab('special')">2. Hàng đặc thù</button>
+        <button class="tab-btn" onclick="switchTab('vehicle')">3. Xe máy / Xe điện / Xe đạp</button>
+      </div>
+
+      <!-- TAB 1: HÀNG THÔNG THƯỜNG -->
+      <div id="tab-normal" class="card">
+        <h2>Thông tin kiện hàng & Tuyến đường</h2>
+        <div class="form-group">
+          <label>Tuyến đường vận chuyển</label>
+          <select id="norm-route" onchange="calculate()">
+            <optgroup label="Tuyến HT, NA, TH <=> HN">
+              <option value="HN_HN">Nội tỉnh Hà Nội (Đã gồm cước nhận & giao tại nhà)</option>
+              <option value="INTRA_CENTRAL">Nội tỉnh / Cận vùng: TH; NA; HT; NA <=> HT</option>
+              <option value="TH_HN_NA_TH">Cận vùng: Thanh Hóa <=> HN; Nghệ An, Hà Tĩnh <=> Thanh Hóa</option>
+              <option value="NA_HT_HN">Liên vùng: Nghệ An, Hà Tĩnh <=> Hà Nội</option>
+            </optgroup>
+            <optgroup label="Tuyến đi Đà Nẵng">
+              <option value="DN_DN">Nội tỉnh Đà Nẵng</option>
+              <option value="HN_DN">Hà Nội <=> Đà Nẵng</option>
+              <option value="TH_NA_HT_DN">Thanh Hóa, Nghệ An, Hà Tĩnh <=> Đà Nẵng</option>
+            </optgroup>
+            <optgroup label="Tuyến đi Quảng Trị">
+              <option value="QT_QT">Nội tỉnh Quảng Trị</option>
+              <option value="HN_QT">Hà Nội <=> Quảng Trị</option>
+              <option value="TH_QT">Thanh Hóa <=> Quảng Trị</option>
+              <option value="NA_HT_QT">Nghệ An, Hà Tĩnh <=> Quảng Trị</option>
+            </optgroup>
+            <optgroup label="Tuyến Quảng Trị <=> Đà Nẵng">
+              <option value="QT_DN">Quảng Trị <=> Đà Nẵng</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Trọng lượng thực tế (kg)</label>
+          <input type="number" id="norm-weight" value="1.5" min="0.1" step="0.1" oninput="calculate()">
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="enable-dim" onchange="toggleDim(); calculate();">
+          <label for="enable-dim" style="margin-bottom:0; cursor:pointer;">Quy đổi kích thước cồng kềnh (Dài x Rộng x Cao / 6000)</label>
+        </div>
+
+        <div id="dim-box" class="sub-panel" style="display: none;">
+          <div class="dimension-grid">
+            <div>
+              <label>Dài (cm)</label>
+              <input type="number" id="dim-l" value="20" min="1" oninput="calculate()">
+            </div>
+            <div>
+              <label>Rộng (cm)</label>
+              <input type="number" id="dim-w" value="20" min="1" oninput="calculate()">
+            </div>
+            <div>
+              <label>Cao (cm)</label>
+              <input type="number" id="dim-h" value="20" min="1" oninput="calculate()">
+            </div>
+          </div>
+          <small style="color: var(--text-muted); display: block; margin-top: 6px;">
+            * Chiều nhỏ hơn 8cm tính tròn 8cm. Chỉ áp dụng cân quy đổi khi chênh lệch quá 10kg so với cân nặng thực tế.
+          </small>
+        </div>
+      </div>
+
+      <!-- TAB 2: HÀNG ĐẶC THÙ -->
+      <div id="tab-special" class="card" style="display: none;">
+        <h2>Hàng hóa đặc thù</h2>
+        <div class="form-group">
+          <label>Nhóm hàng đặc thù</label>
+          <select id="spec-group" onchange="changeSpecialGroup(); calculate();">
+            <option value="textile">Nhóm 1: Quần áo, Vải, Giày dép, Túi xách (VP Ninh Hiệp, VP Đồng Xuân)</option>
+            <option value="goods">Nhóm 2: Gạo, Sơn, Bánh ram, Boong bia...</option>
+          </select>
+        </div>
+
+        <!-- Nhánh Vải Ninh Hiệp -->
+        <div id="spec-textile-panel">
+          <div class="form-group">
+            <label>Tuyến vận chuyển Ninh Hiệp / Đồng Xuân</label>
+            <select id="textile-route" onchange="calculate()">
+              <option value="TH">Ninh Hiệp / Đồng Xuân <=> Thanh Hóa</option>
+              <option value="NA_HT">Ninh Hiệp / Đồng Xuân <=> Nghệ An, Hà Tĩnh</option>
+              <option value="NH_DX_TO_CHO_VINH">Gửi từ VP Ninh Hiệp/Đồng Xuân về VP Chợ Vinh (Giảm 15%)</option>
+              <option value="CHO_VINH_RETURN_NH_DX">Từ khu vực Chợ Vinh gửi trả lại VP Ninh Hiệp/Đồng Xuân (Giảm 50%)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Trọng lượng thực tế (kg)</label>
+            <input type="number" id="textile-weight" value="6" min="0.5" step="0.5" oninput="calculate()">
+          </div>
+        </div>
+
+        <!-- Nhánh Hàng Gạo Sơn Bánh ram -->
+        <div id="spec-goods-panel" style="display: none;">
+          <div class="form-group">
+            <label>Tuyến đường hàng đặc thù</label>
+            <select id="goods-route" onchange="calculate()">
+              <option value="G_TH_NA_HT_HN">Hà Nội <=> Thanh Hóa, Nghệ An, Hà Tĩnh (1.200đ/kg từ trên 2kg)</option>
+              <option value="G_HN_QT">Hà Nội <=> Quảng Trị (2.200đ/kg từ trên 2kg)</option>
+              <option value="G_HN_DN">Hà Nội <=> Đà Nẵng (3.200đ/kg từ trên 2kg)</option>
+              <option value="G_INTER_CENTRAL_QT">Thanh Hóa, Nghệ An, Hà Tĩnh <=> Quảng Trị (1.200đ/kg từ trên 2kg)</option>
+              <option value="G_INTER_CENTRAL_DN">Thanh Hóa, Nghệ An, Hà Tĩnh <=> Đà Nẵng (2.200đ/kg từ trên 2kg)</option>
+              <option value="G_QT_DN">Quảng Trị <=> Đà Nẵng (1.200đ/kg từ trên 2kg)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Trọng lượng thực tế (kg)</label>
+            <input type="number" id="goods-weight" value="25" min="1" step="1" oninput="calculate()">
+          </div>
+          <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+            * Đến 2kg áp dụng theo gói cước dịch vụ cơ bản. Mỗi kg tiếp theo tính theo đơn giá riêng của tuyến.
+          </small>
+        </div>
+      </div>
+
+      <!-- TAB 3: XE CỘ -->
+      <div id="tab-vehicle" class="card" style="display: none;">
+        <h2>Vận chuyển xe máy, xe điện, xe đạp</h2>
+        <div class="form-group">
+          <label>Loại phương tiện</label>
+          <select id="veh-type" onchange="calculate()">
+            <optgroup label="Xe máy xăng">
+              <option value="MOTO_110">Xe máy: Đến 110cc</option>
+              <option value="MOTO_125">Xe máy: Trên 110cc - 125cc</option>
+              <option value="MOTO_150">Xe máy: Trên 125cc - 150cc</option>
+              <option value="MOTO_175">Xe máy: Trên 150cc - 175cc</option>
+              <option value="MOTO_250">Xe máy: Trên 175cc - 250cc</option>
+              <option value="MOTO_500">Xe máy: Trên 250cc - 500cc</option>
+            </optgroup>
+            <optgroup label="Xe đạp & Xe điện">
+              <option value="BIKE_BABY">Xe đạp nhỏ trẻ em tập đi</option>
+              <option value="BIKE_KID">Xe đạp trẻ em</option>
+              <option value="BIKE_ADULT">Xe đạp người lớn</option>
+              <option value="EBIKE">Xe đạp điện</option>
+              <option value="EMOTO">Xe máy điện</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tuyến đường</label>
+          <select id="veh-route" onchange="calculate()">
+            <option value="V_INTRA_NA_HT">Nội tỉnh: Nghệ An, Hà Tĩnh; NA <=> HT</option>
+            <option value="V_CAN_VUNG">Cận vùng: TH <=> HN; NA, HT <=> TH</option>
+            <option value="V_NA_HT_QT">Nghệ An, Hà Tĩnh <=> Quảng Trị</option>
+            <option value="V_NA_HT_HN_DN_QT">Liên vùng: NA, HT <=> HN; ĐN <=> QT</option>
+            <option value="V_DN_HN">Đà Nẵng <=> Hà Nội</option>
+            <option value="V_TH_NA_HT_DN">Thanh Hóa, Nghệ An, Hà Tĩnh <=> Đà Nẵng</option>
+            <option value="V_TH_QT">Thanh Hóa <=> Quảng Trị</option>
+            <option value="V_HN_QT">Hà Nội <=> Quảng Trị</option>
+          </select>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="veh-home-delivery" onchange="calculate()">
+          <label for="veh-home-delivery" style="margin-bottom:0; cursor:pointer;">Yêu cầu giao/nhận xe đạp tại nhà (KV Hà Nội: 50.000đ/chiếc, KV khác tính theo đơn > 2kg)</label>
+        </div>
+      </div>
+
+      <!-- DỊCH VỤ CỘNG THÊM & PHỤ PHÍ -->
+      <div class="card" id="extra-card">
+        <h2>Dịch vụ cộng thêm & Phụ phí</h2>
+        
+        <!-- Nhận hàng tại nhà -->
+        <div class="form-group">
+          <label>Dịch vụ Nhận hàng tại nhà</label>
+          <select id="pickup-srv" onchange="calculate()">
+            <option value="none">Không yêu cầu (Khách gửi tại VP/Đại lý)</option>
+            <option value="pickup_hn">Nhận tại nhà khu vực Hà Nội</option>
+            <option value="pickup_nh">Nhận tại nhà khu vực Ninh Hiệp gửi đi</option>
+            <option value="pickup_central">Nhận tại nhà KV Thanh Hóa, Nghệ An, Hà Tĩnh, Quảng Trị</option>
+            <option value="pickup_dn">Nhận tại nhà KV Đà Nẵng gửi đi</option>
+          </select>
+        </div>
+
+        <!-- Giao hàng tại nhà -->
+        <div class="form-group">
+          <label>Dịch vụ Giao hàng tại nhà</label>
+          <select id="delivery-srv" onchange="calculate()">
+            <option value="none">Không yêu cầu (Khách nhận tại VP/Đại lý)</option>
+            <option value="deliv_hn">Giao tại nhà khu vực Hà Nội</option>
+            <option value="deliv_central">Giao tại nhà KV Thanh Hóa, Nghệ An, Hà Tĩnh, Quảng Trị</option>
+            <option value="deliv_dn">Giao tại nhà KV Đà Nẵng</option>
+          </select>
+        </div>
+
+        <!-- Khai giá hàng hóa -->
+        <div class="form-group">
+          <label>Phân loại khai báo giá trị</label>
+          <select id="declared-type" onchange="calculate()">
+            <option value="none">Không khai báo giá trị</option>
+            <option value="normal">Hàng hóa thông thường (<=10tr: 0.2%, >10tr: 0.3%)</option>
+            <option value="fragile">Hàng dễ vỡ / Cây cảnh, hoa (0.5% giá trị)</option>
+            <option value="high_val">Hàng giá trị cao (Điện thoại, Laptop, Đồng hồ...) (1%, tối thiểu 50.000đ)</option>
+            <option value="docs">Hàng giấy tờ / Tài liệu pháp lý</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="val-box" style="display:none;">
+          <label>Giá trị hàng khai báo (VNĐ)</label>
+          <input type="number" id="declared-val" value="5000000" min="0" step="500000" oninput="calculate()">
+        </div>
+
+        <!-- COD -->
+        <div class="form-group">
+          <label>Thu hộ tiền (COD)</label>
+          <input type="number" id="cod-val" value="0" min="0" step="100000" placeholder="Nhập số tiền COD (VNĐ)" oninput="calculate()">
+          <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+            * Đến 2 triệu đồng: 15.000đ. Trên 2 triệu đồng: 0.8% * số tiền thu hộ. Đơn COD miễn phí giao hàng & miễn phụ phí khai giá (trong hạn mức COD).
+          </small>
+        </div>
+
+        <!-- Phụ phí khác -->
+        <div class="checkbox-group">
+          <input type="checkbox" id="oversized-chk" onchange="calculate()">
+          <label for="oversized-chk" style="margin-bottom:0; cursor:pointer;">Hàng quá khổ (kích thước một chiều lớn hơn 3m) (+2.500đ/kg)</label>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="supermarket-chk" onchange="calculate()">
+          <label for="supermarket-chk" style="margin-bottom:0; cursor:pointer;">Giao hàng siêu thị / Đồng kiểm (<=25kg: 50.000đ, >25kg: 100.000đ)</label>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="return-chk" onchange="calculate()">
+          <label for="return-chk" style="margin-bottom:0; cursor:pointer;">Hàng chuyển hoàn (+50% cước cơ bản)</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- CỘT BÊN PHẢI: KẾT QUẢ TÍNH CƯỚC -->
+    <div class="right-col">
+      <div class="card result-card">
+        <div class="total-price-banner">
+          <div class="title">TỔNG CƯỚC THANH TOÁN (GỒM VAT)</div>
+          <div class="price" id="res-total">0 đ</div>
+          <span class="badge" id="res-time" style="margin-top: 8px;">Toàn trình: --</span>
+        </div>
+
+        <h2>Chi tiết biểu cước</h2>
+
+        <div class="detail-row">
+          <span class="label">Trọng lượng tính cước:</span>
+          <span class="val" id="res-bill-wt">0 kg</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Cước cơ bản chính:</span>
+          <span class="val" id="res-base">0 đ</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Phí nhận hàng tại nhà:</span>
+          <span class="val" id="res-pickup">0 đ</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Phí giao hàng tại nhà:</span>
+          <span class="val" id="res-delivery">0 đ</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Phí thu hộ (COD):</span>
+          <span class="val" id="res-cod">0 đ</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Phí khai giá bảo hiểm:</span>
+          <span class="val" id="res-insurance">0 đ</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Phụ phí hàng nặng (>100kg):</span>
+          <span class="val" id="res-heavy">0 đ</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Phụ phí quá khổ / Siêu thị:</span>
+          <span class="val" id="res-extra">0 đ</span>
+        </div>
+
+        <div class="detail-row" id="row-return" style="display:none;">
+          <span class="label">Cước phí chuyển hoàn:</span>
+          <span class="val" id="res-return">0 đ</span>
+        </div>
+
+        <div class="notes-box">
+          <strong>Quy tắc làm tròn:</strong> Số tiền lẻ dưới 500đ làm tròn xuống 0đ, từ 500đ trở lên làm tròn lên 1.000đ.<br>
+          <strong>Hàng quy đổi:</strong> Chiều &lt; 8cm làm tròn lên 8cm. Trọng lượng tính phụ phí theo cân thực.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentTab = 'normal';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-normal').style.display = 'none';
+    document.getElementById('tab-special').style.display = 'none';
+    document.getElementById('tab-vehicle').style.display = 'none';
+
+    if (tab === 'normal') {
+      event.target.classList.add('active');
+      document.getElementById('tab-normal').style.display = 'block';
+      document.getElementById('extra-card').style.display = 'block';
+    } else if (tab === 'special') {
+      event.target.classList.add('active');
+      document.getElementById('tab-special').style.display = 'block';
+      document.getElementById('extra-card').style.display = 'block';
+    } else if (tab === 'vehicle') {
+      event.target.classList.add('active');
+      document.getElementById('tab-vehicle').style.display = 'block';
+      document.getElementById('extra-card').style.display = 'none';
+    }
+    calculate();
+  }
+
+  function toggleDim() {
+    const chk = document.getElementById('enable-dim').checked;
+    document.getElementById('dim-box').style.display = chk ? 'block' : 'none';
+  }
+
+  function changeSpecialGroup() {
+    const val = document.getElementById('spec-group').value;
+    document.getElementById('spec-textile-panel').style.display = (val === 'textile') ? 'block' : 'none';
+    document.getElementById('spec-goods-panel').style.display = (val === 'goods') ? 'block' : 'none';
+  }
+
+  function roundMoney(amount) {
+    const remainder = amount % 1000;
+    if (remainder < 500) {
+      return amount - remainder;
+    } else {
+      return amount - remainder + 1000;
+    }
+  }
+
+  function formatVND(num) {
+    return num.toLocaleString('vi-VN') + ' đ';
+  }
+
+  function calculate() {
+    // Declared value show/hide
+    const decType = document.getElementById('declared-type').value;
+    document.getElementById('val-box').style.display = (decType !== 'none' && decType !== 'docs') ? 'block' : 'none';
+
+    let billWeight = 0;
+    let basePrice = 0;
+    let pickupFee = 0;
+    let deliveryFee = 0;
+    let codFee = 0;
+    let insuranceFee = 0;
+    let heavyFee = 0;
+    let extraSpecialFee = 0;
+    let returnFee = 0;
+    let leadTime = "12h - 24h";
+
+    const codAmount = parseFloat(document.getElementById('cod-val').value) || 0;
+    const isCOD = codAmount > 0;
+
+    if (currentTab === 'normal') {
+      const realWeight = parseFloat(document.getElementById('norm-weight').value) || 0;
+      let chargeableWeight = realWeight;
+
+      if (document.getElementById('enable-dim').checked) {
+        let l = parseFloat(document.getElementById('dim-l').value) || 0;
+        let w = parseFloat(document.getElementById('dim-w').value) || 0;
+        let h = parseFloat(document.getElementById('dim-h').value) || 0;
+        if (l < 8) l = 8;
+        if (w < 8) w = 8;
+        if (h < 8) h = 8;
+        const dimWeight = (l * w * h) / 6000;
+        if (dimWeight - realWeight > 10) {
+          chargeableWeight = dimWeight;
+        }
+      }
+      billWeight = chargeableWeight;
+
+      const route = document.getElementById('norm-route').value;
+      
+      // Biểu cước hàng thông thường:
+      // [đến 1kg, đến 2kg, mỗi kg tiếp theo, leadTime]
+      if (route === 'HN_HN') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 1) basePrice = 28000;
+        else if (billWeight <= 2) basePrice = 33000;
+        else basePrice = 33000 + Math.ceil(billWeight - 2) * 3200;
+      } else if (route === 'INTRA_CENTRAL') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 1) basePrice = 25000;
+        else if (billWeight <= 2) basePrice = 29000;
+        else basePrice = 29000 + Math.ceil(billWeight - 2) * 1700;
+      } else if (route === 'TH_HN_NA_TH') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 1) basePrice = 33000;
+        else if (billWeight <= 2) basePrice = 38000;
+        else basePrice = 38000 + Math.ceil(billWeight - 2) * 2200;
+      } else if (route === 'NA_HT_HN') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 1) basePrice = 38000;
+        else if (billWeight <= 2) basePrice = 40000;
+        else basePrice = 40000 + Math.ceil(billWeight - 2) * 2700;
+      } else if (route === 'DN_DN') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 0.5) basePrice = 28000;
+        else if (billWeight <= 1) basePrice = 28000;
+        else if (billWeight <= 2) basePrice = 33000;
+        else basePrice = 33000 + Math.ceil(billWeight - 2) * 1700;
+      } else if (route === 'HN_DN') {
+        leadTime = "36h - 40h";
+        if (billWeight <= 0.5) basePrice = 48000;
+        else if (billWeight <= 1) basePrice = 58000;
+        else if (billWeight <= 2) basePrice = 63000;
+        else basePrice = 63000 + Math.ceil(billWeight - 2) * 6200;
+      } else if (route === 'TH_NA_HT_DN') {
+        leadTime = "24h - 36h";
+        if (billWeight <= 0.5) basePrice = 43000;
+        else if (billWeight <= 1) basePrice = 48000;
+        else if (billWeight <= 2) basePrice = 53000;
+        else basePrice = 53000 + Math.ceil(billWeight - 2) * 5200;
+      } else if (route === 'QT_QT') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 0.5) basePrice = 28000;
+        else if (billWeight <= 1) basePrice = 28000;
+        else if (billWeight <= 2) basePrice = 33000;
+        else basePrice = 33000 + Math.ceil(billWeight - 2) * 1700;
+      } else if (route === 'HN_QT') {
+        leadTime = "18h - 30h";
+        if (billWeight <= 0.5) basePrice = 43000;
+        else if (billWeight <= 1) basePrice = 43000;
+        else if (billWeight <= 2) basePrice = 48000;
+        else basePrice = 48000 + Math.ceil(billWeight - 2) * 4700;
+      } else if (route === 'TH_QT') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 0.5) basePrice = 33000;
+        else if (billWeight <= 1) basePrice = 38000;
+        else if (billWeight <= 2) basePrice = 40000;
+        else basePrice = 40000 + Math.ceil(billWeight - 2) * 2700;
+      } else if (route === 'NA_HT_QT') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 0.5) basePrice = 28000;
+        else if (billWeight <= 1) basePrice = 33000;
+        else if (billWeight <= 2) basePrice = 38000;
+        else basePrice = 38000 + Math.ceil(billWeight - 2) * 2200;
+      } else if (route === 'QT_DN') {
+        leadTime = "12h - 24h";
+        if (billWeight <= 1) basePrice = 38000;
+        else if (billWeight <= 2) basePrice = 40000;
+        else basePrice = 40000 + Math.ceil(billWeight - 2) * 2700;
+      }
+
+      // Phụ phí hàng nặng (>100kg tính theo trọng lượng thực)
+      if (realWeight > 100) {
+        heavyFee = (realWeight - 100) * 1000;
+      }
+
+    } else if (currentTab === 'special') {
+      const specGrp = document.getElementById('spec-group').value;
+      if (specGrp === 'textile') {
+        const wt = parseFloat(document.getElementById('textile-weight').value) || 0;
+        billWeight = wt;
+        leadTime = "12h - 24h";
+        const r = document.getElementById('textile-route').value;
+        const isNA_HT = (r === 'NA_HT' || r === 'NH_DX_TO_CHO_VINH' || r === 'CHO_VINH_RETURN_NH_DX');
+
+        // Bậc thang cước Ninh Hiệp/Đồng Xuân
+        if (!isNA_HT) { // TH
+          if (wt <= 5) basePrice = 35000;
+          else if (wt <= 10) basePrice = 45000;
+          else if (wt <= 20) basePrice = 56000;
+          else if (wt <= 30) basePrice = 68000;
+          else if (wt <= 40) basePrice = 79000;
+          else if (wt <= 50) basePrice = 91000;
+          else if (wt <= 60) basePrice = 101000;
+          else if (wt <= 70) basePrice = 113000;
+          else if (wt <= 80) basePrice = 124000;
+          else if (wt <= 90) basePrice = 136000;
+          else if (wt <= 100) basePrice = 146000;
+          else {
+            const extra10 = Math.ceil((wt - 100) / 10);
+            basePrice = 146000 + extra10 * 15000;
+          }
+        } else { // NA, HT
+          if (wt <= 5) basePrice = 45000;
+          else if (wt <= 10) basePrice = 60000;
+          else if (wt <= 20) basePrice = 75000;
+          else if (wt <= 30) basePrice = 92000;
+          else if (wt <= 40) basePrice = 108000;
+          else if (wt <= 50) basePrice = 125000;
+          else if (wt <= 60) basePrice = 140000;
+          else if (wt <= 70) basePrice = 156000;
+          else if (wt <= 80) basePrice = 172000;
+          else if (wt <= 90) basePrice = 190000;
+          else if (wt <= 100) basePrice = 204000;
+          else {
+            const extra10 = Math.ceil((wt - 100) / 10);
+            basePrice = 204000 + extra10 * 19000;
+          }
+          if (r === 'NH_DX_TO_CHO_VINH') {
+            basePrice = basePrice * 0.85; // Giảm 15%
+          } else if (r === 'CHO_VINH_RETURN_NH_DX') {
+            basePrice = basePrice * 0.5; // Giảm 50%
+            leadTime = "24h - 32h";
+          }
+        }
+      } else {
+        // Nhóm gạo, sơn, bánh ram
+        const wt = parseFloat(document.getElementById('goods-weight').value) || 0;
+        billWeight = wt;
+        const gr = document.getElementById('goods-route').value;
+        let ratePerKg = 1200;
+        let base2kg = 40000; // Mặc định gói đến 2kg cơ bản
+
+        if (gr === 'G_TH_NA_HT_HN') { ratePerKg = 1200; base2kg = 40000; leadTime = "12h - 24h"; }
+        else if (gr === 'G_HN_QT') { ratePerKg = 2200; base2kg = 48000; leadTime = "18h - 30h"; }
+        else if (gr === 'G_HN_DN') { ratePerKg = 3200; base2kg = 63000; leadTime = "36h - 40h"; }
+        else if (gr === 'G_INTER_CENTRAL_QT') { ratePerKg = 1200; base2kg = 38000; leadTime = "12h - 24h"; }
+        else if (gr === 'G_INTER_CENTRAL_DN') { ratePerKg = 2200; base2kg = 53000; leadTime = "24h - 36h"; }
+        else if (gr === 'G_QT_DN') { ratePerKg = 1200; base2kg = 40000; leadTime = "12h - 24h"; }
+
+        if (wt <= 2) {
+          basePrice = base2kg;
+        } else {
+          basePrice = base2kg + Math.ceil(wt - 2) * ratePerKg;
+        }
+
+        if (wt > 100) {
+          heavyFee = (wt - 100) * 1000;
+        }
+      }
+    } else if (currentTab === 'vehicle') {
+      const vType = document.getElementById('veh-type').value;
+      const vRoute = document.getElementById('veh-route').value;
+      billWeight = 1;
+
+      // Bảng giá xe
+      const vehicleMatrix = {
+        'MOTO_110':  {'V_INTRA_NA_HT':260000, 'V_CAN_VUNG':318000, 'V_NA_HT_QT':318000, 'V_NA_HT_HN_DN_QT':400000, 'V_DN_HN':550000, 'V_TH_NA_HT_DN':500000, 'V_TH_QT':340000, 'V_HN_QT':430000},
+        'MOTO_125':  {'V_INTRA_NA_HT':318000, 'V_CAN_VUNG':375000, 'V_NA_HT_QT':375000, 'V_NA_HT_HN_DN_QT':500000, 'V_DN_HN':650000, 'V_TH_NA_HT_DN':600000, 'V_TH_QT':440000, 'V_HN_QT':490000},
+        'MOTO_150':  {'V_INTRA_NA_HT':375000, 'V_CAN_VUNG':433000, 'V_NA_HT_QT':433000, 'V_NA_HT_HN_DN_QT':575000, 'V_DN_HN':750000, 'V_TH_NA_HT_DN':600000, 'V_TH_QT':550000, 'V_HN_QT':580000},
+        'MOTO_175':  {'V_INTRA_NA_HT':430000, 'V_CAN_VUNG':480000, 'V_NA_HT_QT':480000, 'V_NA_HT_HN_DN_QT':600000, 'V_DN_HN':900000, 'V_TH_NA_HT_DN':750000, 'V_TH_QT':570000, 'V_HN_QT':680000},
+        'MOTO_250':  {'V_INTRA_NA_HT':480000, 'V_CAN_VUNG':530000, 'V_NA_HT_QT':530000, 'V_NA_HT_HN_DN_QT':600000, 'V_DN_HN':1050000,'V_TH_NA_HT_DN':800000, 'V_TH_QT':590000, 'V_HN_QT':730000},
+        'MOTO_500':  {'V_INTRA_NA_HT':530000, 'V_CAN_VUNG':580000, 'V_NA_HT_QT':580000, 'V_NA_HT_HN_DN_QT':650000, 'V_DN_HN':1200000,'V_TH_NA_HT_DN':850000, 'V_TH_QT':620000, 'V_HN_QT':880000},
+        'BIKE_BABY':  {'V_INTRA_NA_HT':46000,  'V_CAN_VUNG':58000,  'V_NA_HT_QT':58000,  'V_NA_HT_HN_DN_QT':58000,  'V_DN_HN':100000, 'V_TH_NA_HT_DN':80000,  'V_TH_QT':65000,  'V_HN_QT':80000},
+        'BIKE_KID':   {'V_INTRA_NA_HT':80000,  'V_CAN_VUNG':80000,  'V_NA_HT_QT':80000,  'V_NA_HT_HN_DN_QT':115000, 'V_DN_HN':150000, 'V_TH_NA_HT_DN':120000, 'V_TH_QT':100000, 'V_HN_QT':120000},
+        'BIKE_ADULT': {'V_INTRA_NA_HT':115000, 'V_CAN_VUNG':115000, 'V_NA_HT_QT':115000, 'V_NA_HT_HN_DN_QT':173000, 'V_DN_HN':250000, 'V_TH_NA_HT_DN':200000, 'V_TH_QT':150000, 'V_HN_QT':200000},
+        'EBIKE':      {'V_INTRA_NA_HT':173000, 'V_CAN_VUNG':173000, 'V_NA_HT_QT':173000, 'V_NA_HT_HN_DN_QT':250000, 'V_DN_HN':400000, 'V_TH_NA_HT_DN':350000, 'V_TH_QT':210000, 'V_HN_QT':250000},
+        'EMOTO':      {'V_INTRA_NA_HT':207000, 'V_CAN_VUNG':230000, 'V_NA_HT_QT':230000, 'V_NA_HT_HN_DN_QT':330000, 'V_DN_HN':500000, 'V_TH_NA_HT_DN':400000, 'V_TH_QT':260000, 'V_HN_QT':350000}
+      };
+
+      basePrice = vehicleMatrix[vType][vRoute] || 0;
+      leadTime = (vRoute.includes('DN') || vRoute.includes('HN_QT')) ? "3 - 4 ngày" : "2 - 3 ngày";
+
+      // Phụ thu vé ra vào cửa bến 10.000đ cho xe máy, xe máy điện, xe đạp điện
+      if (vType.startsWith('MOTO') || vType === 'EMOTO' || vType === 'EBIKE') {
+        extraSpecialFee += 10000;
+      }
+
+      // Giao nhận tại nhà đối với xe đạp
+      if (document.getElementById('veh-home-delivery').checked) {
+        if (vRoute.includes('HN')) {
+          deliveryFee += 50000;
+        } else {
+          deliveryFee += 15000; // Đơn trên 2kg
+        }
+      }
+    }
+
+    // TÍNH PHÍ GIAO/NHẬN TẠI NHÀ & DVCT (Chỉ cho Tab 1 & Tab 2)
+    if (currentTab !== 'vehicle') {
+      const pSrv = document.getElementById('pickup-srv').value;
+      const dSrv = document.getElementById('delivery-srv').value;
+      const rw = billWeight;
+
+      // Nhận hàng tại nhà
+      if (pSrv === 'pickup_hn') {
+        if (rw <= 3) pickupFee = 30000;
+        else if (rw <= 5) pickupFee = 35000;
+        else if (rw <= 10) pickupFee = 40000;
+        else if (rw <= 20) pickupFee = 45000;
+        else if (rw <= 100) pickupFee = 45000 + Math.ceil(rw - 20) * 1000;
+        else if (rw <= 200) pickupFee = 45000 + 80 * 1000 + Math.ceil(rw - 100) * 500;
+        else if (rw <= 1000) pickupFee = 45000 + 80 * 1000 + 100 * 500 + Math.ceil(rw - 200) * 200;
+        else pickupFee = 0; // >1000kg miễn phí
+      } else if (pSrv === 'pickup_nh') {
+        if (rw <= 50) pickupFee = 25000;
+        else if (rw <= 100) pickupFee = 35000;
+        else if (rw <= 200) pickupFee = 55000;
+        else if (rw <= 300) pickupFee = 65000;
+        else pickupFee = 75000;
+      } else if (pSrv === 'pickup_central') {
+        pickupFee = (rw <= 2) ? 10000 : 15000;
+      } else if (pSrv === 'pickup_dn') {
+        pickupFee = (rw <= 2) ? 15000 : 20000;
+      }
+
+      // Giao hàng tại nhà (nếu đơn COD thì miễn phí giao)
+      if (isCOD) {
+        deliveryFee = 0;
+      } else {
+        if (dSrv === 'deliv_hn') {
+          if (rw <= 1) deliveryFee = 25000;
+          else if (rw <= 200) deliveryFee = 25000 + Math.ceil(rw - 1) * 2000;
+          else deliveryFee = 423000; // Đơn >= 200kg cước 423.000đ
+        } else if (dSrv === 'deliv_central') {
+          deliveryFee = (rw <= 2) ? 10000 : 15000;
+        } else if (dSrv === 'deliv_dn') {
+          deliveryFee = (rw <= 2) ? 15000 : 20000;
+        }
+      }
+
+      // Phí COD
+      if (isCOD) {
+        if (codAmount <= 2000000) codFee = 15000;
+        else codFee = codAmount * 0.008;
+      }
+
+      // Khai giá bảo hiểm
+      const declaredVal = parseFloat(document.getElementById('declared-val').value) || 0;
+      let effectiveVal = declaredVal;
+      // Trường hợp COD: nếu giá trị khai báo lớn hơn COD thì tính phí phần chênh lệch
+      if (isCOD) {
+        effectiveVal = Math.max(0, declaredVal - codAmount);
+      }
+
+      if (effectiveVal > 0) {
+        if (decType === 'normal') {
+          if (effectiveVal <= 10000000) insuranceFee = effectiveVal * 0.002;
+          else insuranceFee = effectiveVal * 0.003;
+        } else if (decType === 'fragile') {
+          insuranceFee = effectiveVal * 0.005;
+        } else if (decType === 'high_val') {
+          insuranceFee = Math.max(50000, effectiveVal * 0.01);
+        }
+      }
+
+      // Phụ phí quá khổ (>3m): +2.500đ/kg
+      if (document.getElementById('oversized-chk').checked) {
+        extraSpecialFee += billWeight * 2500;
+      }
+
+      // Giao hàng siêu thị
+      if (document.getElementById('supermarket-chk').checked) {
+        extraSpecialFee += (billWeight <= 25) ? 50000 : 100000;
+      }
+
+      // Hàng chuyển hoàn: +50% cước cơ bản
+      if (document.getElementById('return-chk').checked) {
+        returnFee = basePrice * 0.5;
+        document.getElementById('row-return').style.display = 'flex';
+      } else {
+        document.getElementById('row-return').style.display = 'none';
+      }
+    } else {
+      document.getElementById('row-return').style.display = 'none';
+    }
+
+    // Tổng cước
+    const subTotal = basePrice + pickupFee + deliveryFee + codFee + insuranceFee + heavyFee + extraSpecialFee + returnFee;
+    const finalTotal = roundMoney(subTotal);
+
+    // Hiển thị UI
+    document.getElementById('res-bill-wt').innerText = (currentTab === 'vehicle') ? '1 chiếc' : (billWeight.toFixed(1) + ' kg');
+    document.getElementById('res-base').innerText = formatVND(roundMoney(basePrice));
+    document.getElementById('res-pickup').innerText = formatVND(roundMoney(pickupFee));
+    document.getElementById('res-delivery').innerText = isCOD ? '0 đ (Miễn phí COD)' : formatVND(roundMoney(deliveryFee));
+    document.getElementById('res-cod').innerText = formatVND(roundMoney(codFee));
+    document.getElementById('res-insurance').innerText = formatVND(roundMoney(insuranceFee));
+    document.getElementById('res-heavy').innerText = formatVND(roundMoney(heavyFee));
+    document.getElementById('res-extra').innerText = formatVND(roundMoney(extraSpecialFee));
+    document.getElementById('res-return').innerText = formatVND(roundMoney(returnFee));
+    document.getElementById('res-total').innerText = formatVND(finalTotal);
+    document.getElementById('res-time').innerText = 'Toàn trình dự kiến: ' + leadTime;
+  }
+
+  // Khởi tạo tính toán ban đầu
+  calculate();
+</script>
+</body>
+</html>
